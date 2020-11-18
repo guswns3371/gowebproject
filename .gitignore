@@ -1,0 +1,11 @@
+/config/config.json
+jwt.js
+sessions
+dbConnection.js
+# Project exclude paths
+/node_modules/
+images
+.env
+.env.json
+# Project exclude paths
+/public/vendor/fontawesome-free/node_modules/

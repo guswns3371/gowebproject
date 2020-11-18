@@ -1,0 +1,11 @@
+#migration
+npx sequelize-cli db:migrate --config "config\config.json" --env "goWebPro"
+
+#Post
+sequelize model:create --name Post --attributes title:TEXT,content:TEXT,writer:STRING,writerId:INTEGER
+
+#Reply
+sequelize model:create --name Reply --attributes content:TEXT,writer:STRING,postId:INTEGER
+
+#UserInfo
+sequelize model:create --name UserInfo --attributes "user_id:STRING, password:STRING, email:STRING, name:STRING, message:STRING, profile_image:STRING, back_image:STRING, fcm_token:TEXT, ip:STRING, salt:STRING, confirmed:BOOLEAN"

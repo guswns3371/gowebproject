@@ -1,0 +1,88 @@
+<div class="row justify-content-center">
+
+    <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <!-- Nested Row within Card Body -->
+            <div class="col-lg-6">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">회원가입</h1>
+                    </div>
+                    <form class="user" method="post" id="registerForm">
+                        <div class="form-group row">
+
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <div class="input-group">
+                                    <!--이메일-->
+                                    <input type="text" class="form-control form-control-user error-message"
+                                           data-val="true" required
+                                           id="userEmail" name="email" placeholder="이메일" autoComplete="off"/>
+
+
+                                    <div class="input-group-append">
+                                        <button class="btn btn-dark" type="button" id="checkEmailBtn">
+                                            중복확인
+                                        </button>
+                                    </div>
+                                </div>
+                                <span class="error-message" id="userEmailErr"></span>
+
+                            </div>
+
+                            <!--이름-->
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control form-control-user error-message"
+                                       data-val="true" required
+                                       id="userName" name="name" placeholder="이름" autoComplete="off"/>
+                                <span class="error-message" id="userNameErr"></span>
+                            </div>
+                        </div>
+
+                        <!--아이디-->
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-user error-message"
+                                   data-val="true" required
+                                   id="userId" name="user_id" placeholder="아이디" autoComplete="off"/>
+                            <span class="error-message" id="userIdErr"></span>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <!--비밀번호-->
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <input type="password" class="form-control form-control-user error-message"
+                                       data-val="true" required
+                                       id="userPassword" name="password" placeholder="비밀번호" autoComplete="off" />
+                                <span class="error-message" id="userPasswordErr"></span>
+                            </div>
+
+                            <!--비밀번호-->
+                            <div class="col-sm-6">
+                                <input type="password" class="form-control form-control-user error-message"
+                                       data-val="true" required
+                                       id="userRepeatPassword" name="userRepeatPassword" placeholder="비밀번호 확인" autoComplete="off"/>
+                                <span class="error-message" id="userRepeatPasswordErr"></span>
+                            </div>
+                        </div>
+                        <button id="registerBtn" form="registerForm" type="submit" class="btn btn-primary btn-user btn-block" >
+                            회원가입
+                        </button>
+                        <hr/>
+                <!--        <button href="/" class="btn btn-google btn-user btn-block" >-->
+                <!--             <i class="fab fa-google fa-fw"></i>-->
+                <!--            구글 계정으로 회원가입-->
+                <!--        </button>-->
+                <!--        <button href="/" class="btn btn-facebook btn-user btn-block" >-->
+                <!--             <i class="fab fa-facebook-f fa-fw"></i>-->
+                <!--            페이스북 계정으로 회원가입-->
+                <!--        </button>-->
+                    </form>
+                    <div class="text-center">
+                        <a class="small" href="/login">로그인</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

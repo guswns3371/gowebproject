@@ -1,0 +1,78 @@
+<h1 class="h3 mb-1 text-gray-800">{{title}}</h1>
+
+<!--테이블-->
+<div class="card shadow mb-4">
+    <!-- 제목   -->
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">게시판</h6>
+    </div>
+    <!--테이블    -->
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <a href="post/write" class="btn btn-primary btn-icon-split btn-sm">
+                            <span class="text">글쓰기</span>
+                        </a>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div id="dataTable_filter" class="dataTables_filter">
+                            <label>
+                                Search:
+                                <input class="form-control form-control-sm" type="search" placeholder="" aria-controls="dataTable">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>날짜</th>
+                            <th>좋아요</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        <tr>
+                            <th>번호</th>
+                            <th>제목</th>
+                            <th>날짜</th>
+                            <th>좋아요</th>
+                        </tr>
+                        </tfoot>
+                        <tbody>
+                        {{#each contents}}
+                            <tr>
+                                <td>{{this.id}}</td>
+                                <td><a href="post/{{this.id}}">{{this.title}}</a></td>
+                                <td>{{this.createdAt}}</td>
+                                <td>{{this.like_cnt}}</td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <ul class="pagination">
+                            <li id="dataTable_previous" class="paginate_button page-item previous">
+                                <a class="page-link" href="#" aria-controls="dataTable" tabindex="0" >처음</a>
+                            </li>
+                            <li class="paginate_button page-item ">
+                                <a class="page-link" href="#" aria-controls="dataTable" tabindex="0">1</a>
+                            </li>
+                            <li id="dataTable_next" class="paginate_button page-item next">
+                                <a class="page-link" href="#" aria-controls="dataTable" tabindex="0">마지막</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
