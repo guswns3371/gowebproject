@@ -1,4 +1,6 @@
 const UserModel = require('../model/userModel');
+const jwt = require('jsonwebtoken')
+const secretObj = require("../../config/jwt");
 
 exports.createUser = function (req,res) {
     const newUser = new UserModel(req.body);
@@ -37,11 +39,12 @@ exports.checkLogin = function (req,res) {
         console.log('checkLogin content',content);
 
         if (content.isCorrect && content.isConfirmed){
-            let expiresIn = '5m';
+            let expiresIn = '30m';
 
-            if(req.body.autoLoginCheck === true)
-                expiresIn = '60m';
-
+            if(req.body.autoLoginCheck)
+                expiresIn = '1h';
+            console.log("req.body.autoLoginCheck",req.body.autoLoginCheck)
+            console.log("expiresIn",expiresIn)
             let token = jwt.sign({
                     email: loginInfo.email,
                     password: loginInfo.password,

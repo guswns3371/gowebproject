@@ -48,7 +48,8 @@ module.exports = function(app) {
 
     app.route('/logout')
         .get(function (req, res) {
-            req.session.destroy()
+            req.session.destroy() // 세션 삭제
+            res.clearCookie('user_cookie'); // 세션 쿠키 삭제
             res.redirect('/')
         })
 }

@@ -8,11 +8,9 @@ const logger = require('morgan');
 const models = require('./models/index');
 const exphbs  = require('express-handlebars');
 const appRouter = require('./app/routes/appRoutes');
-const jwt = require('jsonwebtoken')
-const secretObj = require("./config/jwt");
 
-global.jwt = jwt;
-global.secretObj = secretObj;
+const db = require('./models');
+global.db = db;
 
 //make directory
 const fs = require('fs');

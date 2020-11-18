@@ -1,30 +1,71 @@
 const postModel = require('../model/PostModel');
 
-exports.getPosts = function (req,res) {
-    postModel.getPosts(req, function (err,content) {
-        if (err)
-            res.json(err);
-        // res.json(content);
-        console.log(content)
-
-        let token = req.cookies.user_cookie;
-        let decoded = jwt.verify(token, secretObj.secret,null,function (err) {
-            console.log("[토큰 만료] 다시 로그인 해주세요.\n"+err.message);
-            res.redirect('/login');
-        });
-
-        res.render('post/bulletin', {contents: content.message, session : decoded});
-    }).then(r  => {
-        console.log("postModel.getPosts then :",r)
-    });
+const Post = function (infos) {
+    this.id = infos.id;
+    this.title = infos.title;
+    this.content = infos.content;
+    this.like_cnt = infos.like_cnt;
+    this.createdAt = infos.createdAt;
+    this.updatedAt = infos.updatedAt;
 }
 
-exports.addPost = function (req, res) {
-    postModel.addPost(req, function (err,content) {
-        if (err)
-            res.json(err);
-        res.json(content);
-    }).then(r  => {
-        console.log("postModel.addPost then :",r)
-    });
+exports.getPosts = async function (req, res, next) {
+    try{
+        let response = {}
+        let postList = []
+        let pageNum = req.query.page;
+        let offSet = 0;
+        let limit = 10
+
+        if (pageNum > 1) {
+            offSet = limit * (pageNum - 1);
+        }
+
+        await db.Post.findAll({
+            offset: offSet,
+            limit: limit
+        }).then(posts => {
+            posts.forEach(post => {
+                let _post = new Post(post)
+                _post.createdAt = _post.createdAt.format("yy-MM-dd hh:mm")
+                postList.push(new Post(_post))
+            })
+            response.success = true
+            response.message = postList
+            console.log(posts)
+        }).catch(err => {
+            console.log('Post.getPosts err', err)
+            response.success = false
+            response.message = "게시물 불러오기 실패" + err.message
+        });
+
+        res.render('post/bulletin', {contents: response.message, session: res.locals});
+    }catch (e) {
+        console.error('getPosts err',e);
+        next(e);
+    }
+
+}
+
+exports.addPost = async function (req, res,next) {
+    try{
+        let post = new Post(req.body)
+        let response = {}
+        console.log('Post.addPost', post)
+
+        await db.Post.create({
+            title: post.title,
+            content: post.content
+        }).then(res => {
+            response.success = true
+            response.message = "게시물 작성 성공"
+        }).catch(err => {
+            response.success = false
+            response.message = "게시물 작성 실패" + err.message
+        })
+        res.json(response)
+    }catch (e) {
+        console.error('addPost err',e);
+        next(e);
+    }
 }
