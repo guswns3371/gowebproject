@@ -1,6 +1,7 @@
 module.exports = function(app) {
     const user = require('../controller/userCotroller');
     const upload = require("../util/uploadUtils");
+    const {verifyToken} = require('./middleware/authorization');
 
     app.route('/user/:id')
         .get(user.getAllUserDatas);

@@ -1,9 +1,9 @@
 // write
 $('#writeBtn').on('click',function (e) {
     const title = $('#title').val();
-    const content = $('#content').val();
+    const content = $('textarea#content').val();
 
-    if (title.length ===0 || content.length === 0) {
+    if (title.length === 0 || content.length === 0) {
         alert("제목, 본문을 정확히 입력해주세요")
         return
     }

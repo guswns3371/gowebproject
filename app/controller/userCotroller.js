@@ -49,7 +49,8 @@ exports.checkLogin = function (req,res) {
                     email: loginInfo.email,
                     password: loginInfo.password,
                     userId : content.userId,
-                    userName : content.userName
+                    userName : content.userName,
+                    userIndex : content.id
                 },
                 secretObj.secret ,    // 비밀 키
                 {

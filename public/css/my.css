@@ -10,18 +10,21 @@
 .no-border:focus{
     outline: none;
 }
-textarea.no-border{
+textarea.no-border#content{
     resize: none;
     width:100%;
-    min-height: 500px;
-    max-height: 700px;
+    min-height: 350px;
+    max-height: 500px;
 }
-input.no-border{
+
+input.no-border#title{
     width:100%;
     min-height: 35px;
     max-height: 50px;
+    font-size: 20px;
+    font-weight: bold;
 }
-input.no-border::placeholder{
+input.no-border#title::placeholder{
     font-size: 20px;
     font-weight: bold;
 }
@@ -65,4 +68,12 @@ a#logo {
 
 .img-profile{
     margin: 5px !important;
+}
+
+.container-fluid#body_container{
+    padding: 5px 180px;
+}
+.table td, .table th {
+    padding: .3rem !important;
+    text-align: left;
 }

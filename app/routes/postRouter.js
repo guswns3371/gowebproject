@@ -7,9 +7,15 @@ module.exports = function(app) {
     app.route('/post')
         .get(verifyToken, post.getPosts);
 
-    app.route('/post/write',verifyToken)
+    app.route('/post/page/:page')
+        .get(verifyToken, post.getPosts);
+
+    app.route('/post/id/:id')
+        .get(verifyToken, post.getPost);
+
+    app.route('/post/write')
         .get(verifyToken, function (req,res){
-            res.render('post/write')
+            res.render('post/write', {session: res.locals});
         })
         .post(verifyToken, post.addPost);
 }
