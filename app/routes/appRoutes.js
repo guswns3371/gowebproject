@@ -12,7 +12,7 @@ module.exports = function(app) {
     /* GET home page. */
     app.get('/', verifyToken, function(req, res, next) {
         console.log('session',res.locals)
-        res.render('index', { title: 'Express', session : res.locals});
+        res.render('index', { title: 'BlahBlah', session : res.locals});
     });
 
 };

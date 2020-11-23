@@ -54,7 +54,7 @@ a#loginBtn{
 
 a#logo {
     text-decoration: none;
-    font-weight: 400;
+    font-weight: bold;
     padding: 7px;
     /*color: #fff;*/
     /*background-color: #4e73df;*/
@@ -71,9 +71,15 @@ a#logo {
 }
 
 .container-fluid#body_container{
-    padding: 5px 180px;
+    padding: 5px 200px;
 }
 .table td, .table th {
     padding: .3rem !important;
     text-align: left;
+}
+#likeBtn:hover{
+    cursor:pointer;
+}
+.card-body#bulletinList{
+    padding: 0.5rem;
 }

@@ -11,9 +11,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      UserInfo.hasMany(models.Post);
+      UserInfo.hasMany(models.PostItem,{
+        onDelete: 'cascade'
+      });
+      UserInfo.hasMany(models.LikePostItem,{
+        onDelete: 'cascade'
+      });
+      UserInfo.hasMany(models.ViewPostItem,{
+        onDelete: 'cascade'
+      });
     }
-  };
+  }
+
   UserInfo.init({
     user_id: DataTypes.STRING,
     password: DataTypes.STRING,

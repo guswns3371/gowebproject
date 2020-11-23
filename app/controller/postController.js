@@ -1,26 +1,35 @@
-const postModel = require('../model/postModel');
+const Bulletin = function (infos) {
+    this.id = infos.id;
+    this.name = infos.name;
+}
 
-const Post = function (infos) {
+const PostItem = function (infos) {
     this.id = infos.id;
     this.title = infos.title;
     this.content = infos.content;
-    this.writer_id = infos.writer_id;
-    this.like_cnt = infos.like_cnt;
+    this.userInfoId = infos.userInfoId;
+    this.postId = infos.postId;
     this.createdAt = infos.createdAt;
     this.updatedAt = infos.updatedAt;
+    this.view_cnt = infos.view_cnt;
+    this.like_cnt = infos.like_cnt;
     this.UserInfo = {
         id : infos.UserInfo.id,
+        user_id : infos.UserInfo.user_id,
         email : infos.UserInfo.email,
         name : infos.UserInfo.name
     }
 }
 
-exports.getPosts = async function (req, res, next) {
+exports.getBoardAndPosts = async function (req, res, next) {
     try{
         let response = {}
+        let bulletinList = []
         let postList = []
         let tabs =[]
-        let pageNum = req.params.page;
+        let userId = res.locals.userIndex
+        let category = req.params.category;
+        let pageNum = req.query.page;
         let offSet = 0;
         let limit = 10
 
@@ -28,81 +37,177 @@ exports.getPosts = async function (req, res, next) {
             offSet = limit * (pageNum - 1);
         }
 
-        await db.Post.findAndCountAll({
+        await db.Bulletin.findAll()
+            .then(result =>{
+                result.forEach(bulletin=>{
+                    bulletinList.push(new Bulletin(bulletin))
+                    response.bulletinList = bulletinList
+                })
+                console.log(JSON.parse(JSON.stringify(bulletinList)))
+            }).catch(err=>{
+                console.log("getBulletinBoard err : "+err)
+            })
+
+        let postItemList=  await db.PostItem.findAndCountAll({
+            where:{
+              BulletinId : category
+            },
             offset: offSet,
             limit: limit,
             include : [{
                 model : db.UserInfo
             }]
-        }).then(result => {
-            result.rows.forEach(post => {
-                let result = new Post(post)
+        });
+
+        if (postItemList){
+            for (const post of postItemList.rows) {
+                let result = new PostItem(post)
                 result.createdAt = result.createdAt.format("yy-MM-dd hh:mm")
+
+                console.log(result.id)
+                await db.ViewPostItem.findAndCountAll({
+                    where: {
+                        PostItemId: result.id
+                    }
+                }).then(result1=>{
+                    console.log('fuck')
+                    result.view_cnt = result1.count
+                })
+
+                await db.LikePostItem.findAndCountAll({
+                    where: {
+                        PostItemId: result.id
+                    }
+                }).then(result2=>{
+                    result.like_cnt = result2.count
+                })
+
                 postList.push(result)
-            })
-            let count = result.count
+            }
+
+            let count = postItemList.count
             let tabCount = Math.ceil(count/limit)
             for (let i =1; i <= tabCount; i++)
                 tabs.push(i)
             response.success = true
             response.message = postList
-            response.tabCount = tabs
+            response.tabList = tabs
 
             // JSON.parse(JSON.stringify(result)) 로 json object를 포함한
             // 결과를 JSON 형태로 볼수 있다
-            console.log(JSON.parse(JSON.stringify(result)))
-        }).catch(err => {
-            console.log('Post.getPosts err', err)
+            console.log(JSON.parse(JSON.stringify(postItemList)))
+        }else {
             response.success = false
-            response.message = "게시물 목록 불러오기 실패" + err.message
-        });
+            response.message = "게시물 목록 불러오기 실패"
+        }
 
-        res.render('post/bulletin', {contents: response.message, tabCount:response.tabCount ,session: res.locals});
+        res.render('bulletin/bulletin', {session: res.locals,bulletinList: bulletinList,
+            contents: response.message, tabList:response.tabList ,title:bulletinList[category-1].name});
     }catch (e) {
         console.error('getPosts err',e);
-        next(e);
     }
 
 }
 exports.getPost = async function (req, res, next) {
     try {
         let response = {}
-        await db.Post.findOne({
+        let userId = res.locals.userIndex
+        let postItemId = req.query.id
+
+        await db.PostItem.findOne({
             where : {
-                id : req.params.id
+                id : postItemId
             },
             include : [{
                 model : db.UserInfo
+            },{
+                model : db.Bulletin
             }]
         }).then(post =>{
             console.log(post)
-            let result = new Post(post)
+            let result = new PostItem(post)
             result.createdAt = result.createdAt.format("yy-MM-dd hh:mm")
             response.success = true
             response.message = result
+            response.bulletinName = post.Bulletin.name
+            response.bulletinId = post.Bulletin.id
         }).catch(err =>{
             response.success = false
             response.message = "게시물 내용 불러오기 실패" + err.message
             console.log('getPost err1',err)
         })
 
-        res.render('post/inner', {inner: response.message, session: res.locals});
+        // 조회수 확인후 +1
+        await db.ViewPostItem.findAndCountAll({
+            where : {
+                PostItemId : postItemId,
+                UserInfoId : userId
+            }
+        }).then(result=>{
+            if (result.count === 0)
+                db.ViewPostItem.create({PostItemId: postItemId, UserInfoId: userId})
+
+        })
+        await db.ViewPostItem.findAndCountAll({
+            where : {
+                PostItemId : postItemId,
+                UserInfoId : userId
+            }
+        }).then(result=>{
+            response.views =  result.count
+        })
+
+        // 좋아요수
+        await db.LikePostItem.findAndCountAll({
+            where : {
+                PostItemId : postItemId,
+                UserInfoId : userId
+            }
+        }).then(result=>{
+            response.likes =  result.count
+        })
+        console.log('response',JSON.parse(JSON.stringify(response)))
+
+        res.render('bulletin/inner', {inner: response, session: res.locals, title: response.message.title});
     } catch (e) {
         console.error('getPost err2', e);
         next(e);
     }
 }
 
+exports.updatePost = async function (req, res,next) {
+    // 좋아요 버튼
+    let respons = {}
+    let userId = res.locals.userIndex
+    let postItemId = req.body.postItemId
+    await db.LikePostItem.findAndCountAll({
+        where : {
+            PostItemId : postItemId,
+            UserInfoId : userId
+        }
+    }).then(result=>{
+        if (result.count === 0){
+            db.LikePostItem.create({PostItemId: postItemId, UserInfoId: userId})
+            respons.success = true
+            respons.message = '이 글에 공감하였습니다.'
+        }else {
+            respons.success = false
+            respons.message = '이미 공감한 글입니다'
+        }
+        res.json(respons)
+    })
+}
+
 exports.addPost = async function (req, res,next) {
     try{
-        let post = new Post(req.body)
         let response = {}
-        console.log('Post.addPost', post)
+        console.log('Post.addPost', req.body)
 
-        await db.Post.create({
-            title: post.title,
-            content: post.content,
-            writer_id: res.locals.userIndex
+        await db.PostItem.create({
+            title: req.body.title,
+            content: req.body.content,
+            UserInfoId: res.locals.userIndex,
+            BulletinId : req.body.bulletinId
         }).then(res => {
             response.success = true
             response.message = "게시물 작성 성공"
@@ -116,3 +221,22 @@ exports.addPost = async function (req, res,next) {
         next(e);
     }
 }
+
+exports.writePost =  async function (req, res,next) {
+    try {
+        let bulletinList = []
+        await db.Bulletin.findAll()
+            .then(result =>{
+                result.forEach(bulletin=>{
+                    bulletinList.push(new Bulletin(bulletin))
+                    res.bulletinList = bulletinList
+                })
+            }).catch(err=>{
+                console.log("getBulletinBoard err : "+err)
+            })
+        res.render('bulletin/write', {session: res.locals, title:"글쓰기",bulletinList:bulletinList});
+    }catch (e) {
+
+    }
+}
+

@@ -1,0 +1,26 @@
+<h6><a href="/bulletin/{{inner.bulletinId}}">{{inner.bulletinName}}</a></h6>
+<h1 class="h3 mb-1 text-gray-800">{{inner.message.title}}</h1>
+
+<div class="card shadow mb-4">
+    <!-- 제목   -->
+    <div class="card-header py-3">
+        <div class="row">
+            <div class="col-sm-1"><i class="fas fa-eye" style="color : #2e59d9"> {{inner.views}}</i> </div>
+            <div class="col-sm-1"><i class="fas fa-heart" id="likeBtn" style="color: #ca2819"> {{inner.likes}}</i> </div>
+            <div class="col-sm-6"><i class="fas fa-reply-all" style="color: #b1a500"> {{inner.replies}}</i> </div>
+            <div class="col-sm-2">{{inner.message.UserInfo.user_id}}</div>
+            <div class="col-sm-2">{{inner.message.createdAt}}</div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4 py-3 border-left-primary">
+            <div class="card-body">
+                {{inner.message.content}}
+                {{inner.message.image}}
+            </div>
+        </div>
+    </div>
+</div>

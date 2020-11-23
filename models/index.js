@@ -11,7 +11,10 @@ const db = {
   ChatHistory: undefined,
   ChatRoom: undefined,
   UserChatRoom: undefined,
-  Post: undefined,
+  PostItem: undefined,
+  LikePostItem: undefined,
+  ViewPostItem: undefined,
+  Bulletin: undefined,
   Reply:undefined
 };
 

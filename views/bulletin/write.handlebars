@@ -18,6 +18,20 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+
+                        <div class="dropdown mb-4">
+                            <button class="btn btn-primary dropdown-toggle"
+                                    type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                게시판
+                           </button>
+                            <div class="dropdown-menu animated--fade-in"
+                                 aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                {{#each bulletinList}}
+                                    <a class="dropdown-item" id="{{this.id}}">{{this.name}}</a>
+                                {{/each}}
+                            </div>
+                        </div>
+
                         <input class="no-border" type="text" name="title" id="title" placeholder="제목" autoComplete="off"/>
                         <hr/>
                         <textarea class="no-border" name="content" id="content" placeholder="본문"></textarea><br/>

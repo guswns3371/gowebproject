@@ -4,7 +4,19 @@
 <div class="card shadow mb-4">
     <!-- 제목   -->
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">게시판</h6>
+        <div class="row">
+
+            {{#each bulletinList}}
+                <div class="col-xl-3 col-md-6 mb-4" >
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body" id="bulletinList">
+                                <h6 class="m-0 font-weight-bold text-primary"><a href="/bulletin/{{this.id}}">{{this.name}}</a></h6>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+
+        </div>
     </div>
     <!--테이블    -->
     <div class="card-body" id="bulletin">
@@ -12,7 +24,7 @@
             <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
                 <div class="row">
                     <div class="col-sm-12 col-md-6">
-                        <a href="post/write" class="btn btn-primary btn-icon-split btn-sm">
+                        <a href="/post/write" class="btn btn-primary btn-icon-split btn-sm">
                             <span class="text">글쓰기</span>
                         </a>
                     </div>
@@ -30,20 +42,22 @@
                         <thead>
                         <tr>
                             <th style="width: 100px">번호</th>
-                            <th style="width: 400px">제목</th>
-                            <th style="width: 100px">글쓴이</th>
+                            <th style="width: 350px">제목</th>
+                            <th style="width: 80px"><i class="fas fa-eye" style="color : #2e59d9"></i> 조회수</th>
+                            <th style="width: 80px"><i class="fas fa-heart" style="color: #ca2819"></i> 좋아요</th>
+                            <th style="width: 150px">글쓴이</th>
                             <th style="width: 150px">날짜</th>
-                            <th style="width: 80px">좋아요</th>
                         </tr>
                         </thead>
                         <tbody>
                         {{#each contents}}
                             <tr>
                                 <td>{{this.id}}</td>
-                                <td><a href="post/id/{{this.id}}">{{this.title}}</a></td>
-                                <td>{{this.UserInfo.name}}</td>
-                                <td>{{this.createdAt}}</td>
+                                <td><a href="/post?id={{this.id}}">{{this.title}}</a></td>
+                                <td>{{this.view_cnt}}</td>
                                 <td>{{this.like_cnt}}</td>
+                                <td>{{this.UserInfo.user_id}}</td>
+                                <td>{{this.createdAt}}</td>
                             </tr>
                         {{/each}}
                         </tbody>
@@ -54,15 +68,15 @@
                     <div class="col-sm-12 col-md-12">
                         <ul class="pagination">
                             <li id="dataTable_previous" class="paginate_button page-item previous">
-                                <a class="page-link" href="#" aria-controls="dataTable" tabindex="0" >처음</a>
+                                <a class="page-link" href="/post?page=1" aria-controls="dataTable" tabindex="0" >처음</a>
                             </li>
-                            {{#each tabCount}}
-                                <li class="paginate_button page-item ">
-                                    <a class="page-link" href="/post/page/{{this}}" aria-controls="dataTable" tabindex="0">{{this}}</a>
+                            {{#each tabList}}
+                                <li class="paginate_button page-item " id="pages">
+                                    <a class="page-link" href="/post?page={{this}}" id="page{{this}}" aria-controls="dataTable" tabindex="0">{{this}}</a>
                                 </li>
                             {{/each}}
                             <li id="dataTable_next" class="paginate_button page-item next">
-                                <a class="page-link" href="#" aria-controls="dataTable" tabindex="0">마지막</a>
+                                <a class="page-link" href="/post?page={{tabList.length}}" aria-controls="dataTable" tabindex="0">마지막</a>
                             </li>
                         </ul>
                     </div>

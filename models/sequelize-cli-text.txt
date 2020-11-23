@@ -1,11 +1,24 @@
 #migration
 npx sequelize-cli db:migrate --config "config\config.json" --env "goWebPro"
 
-#Post
-sequelize model:create --name Post --attributes title:TEXT,content:TEXT,writer:STRING,writerId:INTEGER
+# belongsTo, hasMany 함수 사용법
+https://velog.io/@josworks27/Sequelize-Association
+굳이 foreign key 이름 설정안해도 자동으로 설정해준다
+
+#Bulletin
+sequelize model:create --name Bulletin --attributes name:TEXT
+
+#PostItem
+sequelize model:create --name PostItem --attributes title:TEXT,content:TEXT
+
+#LikePostItem
+sequelize model:create --name LikePostItem --attributes
+
+#ViewPostItem
+sequelize model:create --name ViewPostItem --attributes
 
 #Reply
-sequelize model:create --name Reply --attributes content:TEXT,writer:STRING,postId:INTEGER
+sequelize model:create --name Reply --attributes content:TEXT
 
 #UserInfo
 sequelize model:create --name UserInfo --attributes "user_id:STRING, password:STRING, email:STRING, name:STRING, message:STRING, profile_image:STRING, back_image:STRING, fcm_token:TEXT, ip:STRING, salt:STRING, confirmed:BOOLEAN"

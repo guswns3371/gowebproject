@@ -4,18 +4,16 @@ module.exports = function(app) {
     const {verifyToken} = require('./middleware/authorization');
 
 
+    app.route('/bulletin/:category')
+        .get(verifyToken, post.getBoardAndPosts);
+
     app.route('/post')
-        .get(verifyToken, post.getPosts);
-
-    app.route('/post/page/:page')
-        .get(verifyToken, post.getPosts);
-
-    app.route('/post/id/:id')
         .get(verifyToken, post.getPost);
 
+    app.route('/post/like')
+        .post(verifyToken, post.updatePost);
+
     app.route('/post/write')
-        .get(verifyToken, function (req,res){
-            res.render('post/write', {session: res.locals});
-        })
+        .get(verifyToken,post.writePost)
         .post(verifyToken, post.addPost);
 }

@@ -39,10 +39,10 @@ exports.checkLogin = function (req,res) {
         console.log('checkLogin content',content);
 
         if (content.isCorrect && content.isConfirmed){
-            let expiresIn = '30m';
+            let expiresIn = '1h';
 
             if(req.body.autoLoginCheck)
-                expiresIn = '1h';
+                expiresIn = '5h';
             console.log("req.body.autoLoginCheck",req.body.autoLoginCheck)
             console.log("expiresIn",expiresIn)
             let token = jwt.sign({
