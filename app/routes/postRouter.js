@@ -14,6 +14,9 @@ module.exports = function(app) {
         .post(verifyToken, post.updatePost);
 
     app.route('/post/write')
-        .get(verifyToken,post.writePost)
+        .get(verifyToken,post.getWritePageWithBulletinList)
         .post(verifyToken, post.addPost);
+
+    app.route('/post/reply')
+        .post(verifyToken, post.writeReply);
 }

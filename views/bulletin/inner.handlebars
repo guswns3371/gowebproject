@@ -18,9 +18,116 @@
     <div class="col-lg-12">
         <div class="card mb-4 py-3 border-left-primary">
             <div class="card-body">
-                {{inner.message.content}}
+                <span class="text-gray-800">{{inner.message.content}}</span>
                 {{inner.message.image}}
             </div>
         </div>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">댓글</h6>
+    </div>
+    <div class="card-body" id="reply-section">
+<!---->
+    {{#each replyList}}
+        <div class="card mb-4" id="reply-{{this.id}}">
+            <div class="card-header p-3">
+                <h6>
+                    <span class="text-black-900 font-weight-bold">{{this.UserInfo.name}} </span>
+                    <span class="text-gray-600"> {{this.createdAt}}</span>
+                </h6>
+            </div>
+            <div class="card-body">
+                {{this.content}}
+                <br/>
+                <br/>
+                <button class="btn btn-primary btn-icon-split btn-sm re-reply" name="{{this.id}}">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-flag"></i>
+                    </span>
+                    <span class="text">댓글</span>
+                </button>
+            </div>
+        </div>
+        <div class="card mb-4 re-reply-card" id="re-reply-card-{{this.id}}" name="{{this.id}}" style="display: none !important;">
+            <div class="card-header py-3">
+                <div class="row">
+                    <button class="btn btn-primary btn-sm re-reply-write" type="button">
+                        <span class="text">댓글등록</span>
+                    </button>
+
+                    <button class="btn btn-secondary btn-sm re-reply-cancel"  type="button">
+                        <span class="text"> 취소</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <textarea class="no-border btn-block" name="re-reply-content" id="re-reply-content-{{this.id}}" placeholder="댓글을 입력해주세요"></textarea><br/>
+            </div>
+        </div>
+        {{#each this.SubReply}}
+            <div class="reply">
+                <div class="card mb-4" id="reply-{{this.id}}">
+                    <div class="card-header p-3">
+                        <h6>
+                            <span class="text-gray-900 font-weight-bold">{{this.UserInfo.name}} </span>
+                            <span class="text-gray-600"> {{this.createdAt}}</span>
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        {{this.content}}
+                        <br/>
+                        <br/>
+
+<!--                        <button class="btn btn-primary btn-icon-split btn-sm re-reply" name="{{this.id}}">-->
+<!--                            <span class="icon text-white-50">-->
+<!--                              <i class="fas fa-flag"></i>-->
+<!--                            </span>-->
+<!--                            <span class="text">댓글</span>-->
+<!--                        </button>-->
+
+                    </div>
+                </div>
+                <div class="card mb-4 re-reply-card" id="re-reply-card-{{this.id}}" name="{{this.id}}" style="display: none !important;">
+                    <div class="card-header py-3">
+                        <div class="row">
+                            <button class="btn btn-primary btn-sm re-reply-write" type="button">
+                                <span class="text">댓글등록</span>
+                            </button>
+
+                            <button class="btn btn-secondary btn-sm re-reply-cancel"  type="button">
+                                <span class="text"> 취소</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <textarea class="no-border btn-block" name="re-reply-content" id="re-reply-content-{{this.id}}" placeholder="댓글을 입력해주세요"></textarea><br/>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    {{/each}}
+<!---->
+    {{#if replyList}}
+        <button class="btn btn-primary btn-block" type="button" id="reply-reload">
+            <span class="text">댓글 새로고침</span>
+        </button>
+    {{/if}}
+        <br/>
+        <div class="card mb-4" >
+            <div class="card-header py-3">
+                <div class="row">
+                    <h6 class="col-sm-12 col-md-6 font-weight-bold text-primary">댓글쓰기</h6>
+                    <button class="btn btn-primary btn-sm item-pull-right-on-block" id="reply-write" type="button">
+                        <span class="text">댓글등록</span>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <textarea class="no-border btn-block" name="reply-content" id="reply-content"></textarea><br/>
+            </div>
+        </div>
+
     </div>
 </div>

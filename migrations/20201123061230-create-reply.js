@@ -11,12 +11,6 @@ module.exports = {
       content: {
         type: Sequelize.TEXT
       },
-      userId: {
-        type: Sequelize.STRING
-      },
-      postItemId: {
-        type: Sequelize.INTEGER
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

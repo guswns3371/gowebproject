@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       UserInfo.hasMany(models.ViewPostItem,{
         onDelete: 'cascade'
       });
+      UserInfo.hasMany(models.Reply,{
+        onDelete: 'cascade'
+      });
     }
   }
 

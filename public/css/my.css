@@ -10,6 +10,7 @@
 .no-border:focus{
     outline: none;
 }
+/*bulletin/write*/
 textarea.no-border#content{
     resize: none;
     width:100%;
@@ -29,6 +30,7 @@ input.no-border#title::placeholder{
     font-weight: bold;
 }
 
+/*auth*/
 .error-message{
     color: red;
     font-size: 11px;
@@ -77,9 +79,40 @@ a#logo {
     padding: .3rem !important;
     text-align: left;
 }
+/*bulletin/inner*/
 #likeBtn:hover{
     cursor:pointer;
 }
 .card-body#bulletinList{
     padding: 0.5rem;
+}
+
+.item-pull-right-on-block{
+    margin-left:auto;
+    margin-right: 0;
+}
+.item-set-center{
+    margin-left:auto;
+    margin-right:auto;
+}
+textarea.no-border#reply-content{
+    resize: none;
+    width:100%;
+    min-height: 100px;
+    max-height: 100px;
+}
+textarea.no-border#re-reply-content{
+    resize: none;
+    width:100%;
+    min-height: 60px;
+    max-height: 60px;
+}
+.hide-card{
+    display: none !important;
+}
+.show-card{
+    display: block !important;
+}
+.reply{
+    margin-left: 100px;
 }
