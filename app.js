@@ -12,14 +12,6 @@ const appRouter = require('./app/routes/appRoutes');
 const db = require('./models');
 global.db = db;
 
-//make directory
-const fs = require('fs');
-const dir = './images';
-
-if (!fs.existsSync(dir)){
-  fs.mkdirSync(dir);
-}
-
 var app = express();
 
 // db connection

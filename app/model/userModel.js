@@ -1,6 +1,7 @@
 const sql = require('../../dbConnection');
 const crypto = require('crypto');
 const mailer = require('../util/mailer');
+const auth = require('../util/authentication');
 const randomString = require('randomstring');
 const fs = require('fs');
 
@@ -14,12 +15,13 @@ const User = function (infos) {
     this.secretToken = infos.secretToken;
 };
 
-const getHashPassword = (inputPassword,salt)=>{
-    return  crypto.createHash("sha512").update(inputPassword+salt).digest("hex");
-};
-const getSalt = () =>{
-    return Math.round((new Date().valueOf()*Math.random())) + "";
-};
+
+// const getHashPassword = (inputPassword,salt)=>{
+//     return  crypto.createHash("sha512").update(inputPassword+salt).digest("hex");
+// };
+// const getSalt = () =>{
+//     return Math.round((new Date().valueOf()*Math.random())) + "";
+// };
 
 const sendSecretToken = (secretToken,email) =>{
     // email에 담길 내용
@@ -36,10 +38,11 @@ const sendSecretToken = (secretToken,email) =>{
     // send an email
     mailer.sendEmail('GOTIFY admin', email, subject, html);
 }
+
 User.createUser = function (newInfo,result) {
     let inputPassword = newInfo.password;
-    let salt = getSalt();
-    let hashPassword = getHashPassword(inputPassword,salt);
+    let salt = auth.getSalt();
+    let hashPassword = auth.getHashPassword(inputPassword,salt);
 
     //Generate secret token
     const secretToken = randomString.generate();
@@ -96,7 +99,7 @@ User.checkLogin = function(loginInfo,result){
     let UserData;
     let isCorrect = false;
     let isConfirmed = false;
-    let id,userId,userName;
+    let id;
 
     db.UserInfo.findOne({where : {email : loginInfo.email}})
         .then(user =>{
@@ -107,19 +110,15 @@ User.checkLogin = function(loginInfo,result){
                 console.log("checkLogin ",user.dataValues);
                 UserData = user.dataValues;
                 isCorrect = UserData.password
-                    === getHashPassword(loginInfo.password,UserData.salt);
+                    === auth.getHashPassword(loginInfo.password,UserData.salt);
                 isConfirmed = UserData.confirmed;
                 id = UserData.id;
-                userId = UserData.user_id;
-                userName = UserData.name;
             }
 
             result(null,{
                 isCorrect : isCorrect,
                 isConfirmed : isConfirmed === true,
-                id : id,
-                userId : userId,
-                userName : userName
+                id : id
             });
         })
         .catch(err =>{
@@ -208,7 +207,7 @@ User.getAllUserDatas = function(id,result){
             user.filter(data =>{
                 // 로그인한 사람의 id는 myJson에 삽입
                 // 나머지 사람들의 id는 friendJson에 삽입
-                if(data.id != id) friendJson.push(data);
+                if(data.id !== id) friendJson.push(data);
                 else myJson= data;
             });
 
@@ -227,13 +226,13 @@ User.getAllUserDatas = function(id,result){
 };
 
 
-User.editUserData = async function(req,result){
+User.editUserData = async function(req,res,result){
     let body = req.body;
-    let file = req.files;
+    let file = req.file;
+    let userIndex = req.body.id
     var updateOptions = {};
 
-    const user = await db.UserInfo.findByPk(body.id);
-    console.log(user.profile_image);
+    const user = await db.UserInfo.findByPk(userIndex);
 
     if (typeof body.user_id !== "undefined"){
         updateOptions.user_id = body.user_id;
@@ -244,26 +243,20 @@ User.editUserData = async function(req,result){
     if (typeof body.message !== "undefined"){
         updateOptions.message = body.message;
     }
-    if (typeof file.user_img !== "undefined"){
-        updateOptions.profile_image = file.user_img[0].path.replace('/var/www/html','');
-    }
-    if (typeof file.back_img !== "undefined"){
-        updateOptions.back_image = file.back_img[0].path.replace('/var/www/html','');
+    if (typeof file !== "undefined"){
+        updateOptions.profile_image = "/images/"+file.filename;
+
     }
     console.log("editUserData updateOptions",updateOptions);
 
     db.UserInfo.update(
         updateOptions,
-        {   where : {id : body.id} })
+        {   where : {id : userIndex} })
         .then(res =>{
             console.log("editUserData ",res);
 
-            if (typeof file.user_img !== "undefined" && user.profile_image !== null){
-                try {fs.unlinkSync('/var/www/html'+user.profile_image);
-                }catch (e) {console.log("unlinkSync err",e)}
-            }
-            if (typeof file.back_img !== "undefined" && user.back_image !== null){
-                try {fs.unlinkSync('/var/www/html'+user.back_image)
+            if (typeof file !== "undefined" && user.profile_image !== null){
+                try {fs.unlinkSync('public/'+user.profile_image);
                 }catch (e) {console.log("unlinkSync err",e)}
             }
 

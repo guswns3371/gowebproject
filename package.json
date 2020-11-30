@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "pm_start": "pm2 kill && pm2 start bin/www --watch --ignore-watch=\"data/* sessions/*\" && pm2 log"
+    "pm_start": "pm2 kill && pm2 start bin/www --watch --ignore-watch=\"data/* sessions/* public/images* \" && pm2 log"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

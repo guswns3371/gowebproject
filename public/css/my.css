@@ -1,3 +1,6 @@
+body{
+    zoom: 85%;
+}
 .no-border{
     border : none;
     border-right:0;
@@ -115,4 +118,22 @@ textarea.no-border#re-reply-content{
 }
 .reply{
     margin-left: 100px;
+}
+/*user/edit*/
+.input-title{
+    color: #2d2e33;
+    font-weight: bold;
+    margin-left: 15px !important;
+}
+.edit-image{
+    height: 200px;
+    width: 200px;
+    right: 0;
+    left: 0;
+    margin: auto auto 10px;
+}
+#imageFileOpenInput{
+    margin-left: auto;
+    margin-right: auto;
+    width: 12em;
 }

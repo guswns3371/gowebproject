@@ -3,16 +3,12 @@ module.exports = function(app) {
     const upload = require("../util/uploadUtils");
     const {verifyToken} = require('./middleware/authorization');
 
-    app.route('/user/:id')
+    app.route('/user/info/:id')
         .get(user.getAllUserDatas);
 
     app.route('/user/edit')
-        .post(upload.fields([{name : 'user_img'}, {name: 'back_img'}]), user.editUserData);
-
-    app.route('/user/:id')
-        .get()
-        .put()
-        .delete();
+        .get(verifyToken,user.getUserData)
+        .post(verifyToken, upload.single('profile_image'), user.editUserData);
 
     app.route('/register')
         .get(function (req,res) {

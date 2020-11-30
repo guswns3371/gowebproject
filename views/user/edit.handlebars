@@ -1,0 +1,83 @@
+<div class="row justify-content-center">
+
+    <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+            <!-- Nested Row within Card Body -->
+            <div class="col-lg-6">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">회원정보</h1>
+                    </div>
+
+                    <form class="user" method="post" id="editForm" encType='multipart/form-data'>
+                        <div class="form-group row">
+                            <img class="edit-image" id="editImage" src="{{userData.profile_image}}">
+                        </div>
+                        <div class="form-group row">
+                            <input type="file" name="profile_image" id="imageFileOpenInput" accept="image/*">
+                        </div>
+                        <div class="form-group row">
+
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <span class="input-title">이메일</span>
+                                    <!--이메일-->
+                                    <input type="text" class="form-control form-control-user error-message"
+                                           data-val="true" required disabled value="{{userData.email}}"
+                                           id="edit-userEmail" name="email" placeholder="이메일" autoComplete="off" />
+
+                                <span class="error-message" id="userEmailErr"></span>
+
+                            </div>
+
+                            <!--이름-->
+                            <div class="col-sm-6">
+                                <span class="input-title">이름</span>
+                                <input type="text" class="form-control form-control-user error-message"
+                                       data-val="true" required value="{{userData.name}}"
+                                       id="edit-userName" name="name" placeholder="이름" autoComplete="off"/>
+                                <span class="error-message" id="userNameErr"></span>
+                            </div>
+                        </div>
+
+                        <!--아이디-->
+                        <div class="form-group">
+                            <span class="input-title">아이디</span>
+                            <input type="text" class="form-control form-control-user error-message"
+                                   data-val="true" required value="{{userData.user_id}}"
+                                   id="edit-userId" name="user_id" placeholder="아이디" autoComplete="off"/>
+                            <span class="error-message" id="userIdErr"></span>
+                        </div>
+
+
+<!--                        <div class="form-group row">-->
+<!--                            &lt;!&ndash;비밀번호&ndash;&gt;-->
+<!--                            <div class="col-sm-6 mb-3 mb-sm-0">-->
+<!--                                <span class="input-title">비밀번호</span>-->
+<!--                                <input type="password" class="form-control form-control-user error-message"-->
+<!--                                       data-val="true" required-->
+<!--                                       id="edit-userPassword" name="password" placeholder="비밀번호" autoComplete="off" />-->
+<!--                                <span class="error-message" id="userPasswordErr"></span>-->
+<!--                            </div>-->
+
+<!--                            &lt;!&ndash;비밀번호&ndash;&gt;-->
+<!--                            <div class="col-sm-6">-->
+<!--                                <span class="input-title">비밀번호 확인</span>-->
+<!--                                <input type="password" class="form-control form-control-user error-message"-->
+<!--                                       data-val="true" required-->
+<!--                                       id="edit-userRepeatPassword" name="userRepeatPassword" placeholder="비밀번호 확인" autoComplete="off"/>-->
+<!--                                <span class="error-message" id="userRepeatPasswordErr"></span>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <button id="editBtn" form="editForm" type="submit" class="btn btn-dark btn-user btn-block" >
+                            변경하기
+                        </button>
+                        <hr/>
+                        <input id="id" name="id" value="{{userData.id}}" style="display: none"/>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

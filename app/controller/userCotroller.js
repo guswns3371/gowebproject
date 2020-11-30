@@ -1,6 +1,17 @@
 const UserModel = require('../model/userModel');
 const jwt = require('jsonwebtoken')
 const secretObj = require("../../config/jwt");
+const auth = require('../util/authentication');
+
+const User = function (infos) {
+    this.id = infos.id;
+    this.user_id = infos.user_id;
+    this.password = infos.password;
+    this.profile_image = infos.profile_image;
+    this.email = infos.email;
+    this.name = infos.name;
+    this.salt = infos.salt;
+};
 
 exports.createUser = function (req,res) {
     const newUser = new UserModel(req.body);
@@ -32,7 +43,7 @@ exports.checkIdValidation = function(req, res){
 exports.checkLogin = function (req,res) {
     console.log("query",req.query);
     console.log("body",req.body);
-    const loginInfo = new UserModel(req.body);
+    const loginInfo = new User(req.body);
     UserModel.checkLogin(loginInfo,function (err,content) {
         if (err)
             res.json(err);
@@ -46,10 +57,6 @@ exports.checkLogin = function (req,res) {
             console.log("req.body.autoLoginCheck",req.body.autoLoginCheck)
             console.log("expiresIn",expiresIn)
             let token = jwt.sign({
-                    email: loginInfo.email,
-                    password: loginInfo.password,
-                    userId : content.userId,
-                    userName : content.userName,
                     userIndex : content.id
                 },
                 secretObj.secret ,    // 비밀 키
@@ -94,14 +101,28 @@ exports.getAllUserDatas = function (req,res) {
     })
 };
 
+exports.getUserData = async function (req, res) {
+    try {
+        let userId = res.locals.userIndex
+        const user = await db.UserInfo.findByPk(userId);
+        let userData = new User(user)
+        if (userData.profile_image === null){
+            userData.profile_image = '/images/account_default.jpg'
+        }
+        res.render('user/edit', {session: res.locals, userData : userData})
+    }catch (e) {
+
+    }
+}
+
 exports.editUserData = function (req,res) {
     console.log("editUserData req.body",req.body);
-    console.log("editUserData req.files",req.files);
+    console.log("editUserData req.file",req.file);
 
-    UserModel.editUserData(req, function (err, content) {
+    UserModel.editUserData(req, res,function (err, content) {
         if (err)
             res.json(err);
-        res.json(content);
+        res.render('index', {session: res.locals, title : "BlahBlah"})
     }).then(r  => {
         console.log("editUserData then : ",r)
     })

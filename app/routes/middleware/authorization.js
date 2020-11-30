@@ -1,15 +1,18 @@
 const jwt = require('jsonwebtoken')
 const secretObj = require("../../../config/jwt");
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     try {
         const clientToken = req.cookies.user_cookie;
         const decoded = jwt.verify(clientToken, secretObj.secret);
         if (decoded) {
-            res.locals.userId = decoded.userId;
-            res.locals.userName = decoded.userName;
-            res.locals.email = decoded.email;
-            res.locals.userIndex = decoded.userIndex;
+            const user = await db.UserInfo.findOne({where : {id : decoded.userIndex}})
+
+            res.locals.userId = user.user_id;
+            res.locals.userName = user.name;
+            res.locals.email = user.email;
+            res.locals.userIndex = user.id;
+            res.locals.profile_image = user.profile_image;
 
             console.log('[토큰 인증 성공]')
             next();

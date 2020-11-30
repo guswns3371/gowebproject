@@ -4,7 +4,7 @@ sessions
 dbConnection.js
 # Project exclude paths
 /node_modules/
-images
+public/images
 .env
 .env.json
 # Project exclude paths
