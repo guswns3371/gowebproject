@@ -1,5 +1,5 @@
 body{
-    zoom: 85%;
+    zoom: 90%;
 }
 .no-border{
     border : none;
@@ -76,7 +76,7 @@ a#logo {
 }
 
 .container-fluid#body_container{
-    padding: 5px 200px;
+    padding: 5px 125px;
 }
 .table td, .table th {
     padding: .3rem !important;
@@ -136,4 +136,27 @@ textarea.no-border#re-reply-content{
     margin-left: auto;
     margin-right: auto;
     width: 12em;
+}
+
+/*chat/home*/
+#chat-box{
+    min-height: 550px;
+    max-height: 550px;
+}
+.chat-body{
+    min-height: 500px;
+    max-height: 500px;
+    overflow: auto;
+}
+.chat-history{
+    margin-bottom: 10px;
+}
+.chat-room-list{
+    margin-bottom: 20px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+input#chatSendInput{
+    width: 700px;
+    padding: 0.1rem;
 }

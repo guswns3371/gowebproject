@@ -1,51 +1,126 @@
 const ChatModel = require('../model/chatModel');
+const UserModel = require('../model/userModel');
 
-exports.makeChatRoom = function (req,res) {
-    const chatRoom = new ChatModel(req.body);
-    console.log(chatRoom);
+// exports.makeChatRoom = function (req,res) {
+//     const chatRoom = new ChatModel(req.body);
+//     console.log(chatRoom);
+//
+//     ChatModel.makeChatRoom(chatRoom, function (err, content) {
+//         if (err)
+//             res.json(err);
+//         res.json(content);
+//     }).then(r  => {
+//         console.log("makeChatRoom then :",r)
+//     });
+// };
 
-    ChatModel.makeChatRoom(chatRoom, function (err, content) {
-        if (err)
-            res.json(err);
-        res.json(content);
-    }).then(r  => {
-        console.log("makeChatRoom then :",r)
-    });
+exports.getChatHistory = async function (req,res) {
+    try {
+        let response = []
+        let roomId = req.body.chat_room_id;
+        let chatHistory = await db.ChatHistory.findAll({
+            where : {
+                chat_room_id : roomId
+            },
+            include: [{model : db.UserInfo}]
+        })
+
+        for (const history of chatHistory) {
+            let userInfo = history.UserInfo
+            let mine = res.locals.userIndex === userInfo.id;
+            response.push({
+                mine:mine,
+                chat_history_id : history.id,
+                user_id : userInfo.user_id,
+                user_name : userInfo.name,
+                user_image : userInfo.profile_image,
+                content : history.content,
+                time : history.createdAt.format("hh:mm")
+            })
+        }
+
+        res.json(response)
+    } catch (e) {
+
+    }
 };
 
-exports.getChatHistory = function (req,res) {
-    console.log("===>>  getChat__History room_id : ",req.params.id);
+exports.getChatRoomList = async function (req, res) {
+    try {
+        let response = []
+        let roomData = await db.UserChatRoom.findAll({
+            where : {user_id : res.locals.userIndex},
+            include: [{model : db.ChatRoom}]
+        });
 
-    ChatModel.getChatHistory(req.params.id, function (err,content) {
-        if (err)
-            res.json(err);
-        res.json(content);
-    }).then(r  => {
-        console.log("getChatHistory then :",r)
-    });
+        for (const room of roomData) {
+            let people = room.ChatRoom.people
+            let user = await db.UserInfo.findByPk(people)
+            response.push({
+                user_id: user.id,
+                chat_room_id: room.chat_room_id,
+                user_image: user.profile_image,
+                room_name : user.name,
+                last_content : room.last_content,
+                last_time : room.createdAt.format("hh:mm")
+            })
+        }
+        res.json(response)
+    } catch (e) {
+
+    }
 };
 
-exports.getChatRoomList = function (req,res) {
-    console.log("===>>  getChat__RoomList user_id : ",req.params.id);
+exports.makeHistory = async function (req,res) {
+    try {
+        let roomId = req.body.chat_room_id;
+        let message = req.body.message;
 
-    ChatModel.getChatRoomList(req.params.id, function (err,content) {
-        if (err)
-            res.json(err);
-        res.json(content);
-    }).then(r  => {
-        console.log("getChatRoomList then :",r)
-    });
+        await db.ChatHistory.create({
+            chat_room_id : roomId,
+            chat_user_id : res.locals.userIndex,
+            content : message
+        }).then(result=>{
+            console.log(result)
+        }).catch(err=>{
+            console.log(err)
+        })
+        res.json({})
+    }catch (e) {
+
+    }
 };
 
-exports.makeHistory = function (req,res) {
-    console.log("makeHistory req.body",req.body);
-    console.log("makeHistory req.files",req.files);
 
-    ChatModel.makeHistory(req, function (err,content) {
-        if (err)
-            res.json(err);
-        res.json(content);
-    }).then(r  => {
-        console.log("makeHistory then :",r)
-    });
-};
+exports.getChatHome = async function (req, res) {
+    try {
+        let chatRoomList = []
+        let users = await db.UserInfo.findAll()
+
+        // 모든 유저들과의 1대1 방 추가
+        for (const user of users) {
+            let chatRoomOneToOne = await db.ChatRoom.findOrCreate({
+                where : {people : `${[user.id]}`.trim()},
+                defaults : {people : `${[user.id]}`.trim()}
+            })
+            let chatRoomData = chatRoomOneToOne[0]
+
+            await db.UserChatRoom.findOrCreate({
+                where :{
+                    user_id : res.locals.userIndex,
+                    chat_room_id : chatRoomData.id
+                },
+                defaults:{
+                    user_id : res.locals.userIndex,
+                    chat_room_id : chatRoomData.id
+                }
+            })
+
+
+        }
+
+        res.render('chat/home',{session : res.locals})
+    }catch (e) {
+
+    }
+}

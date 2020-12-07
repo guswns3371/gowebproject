@@ -4,7 +4,7 @@ module.exports = function(app) {
     const {verifyToken} = require('./middleware/authorization');
 
 
-    app.route('/bulletin/:category')
+    app.route('/bulletin')
         .get(verifyToken, post.getBoardAndPosts);
 
     app.route('/post')

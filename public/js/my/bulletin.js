@@ -150,15 +150,21 @@ $('#likeBtn').on('click',function (){
 
 })
 
-
+let category
 $(document).ready(function () {
     // paging
     let page = parseInt($.urlParam('page'))
+    category = parseInt($.urlParam('id'))
     if (isNaN(page))
         page = 1
 
     $('#page'+page).css("background","#4e73df").css("color",'#ffffff')
 
     $('textarea#reply-content').html('')
+})
+//페이징 버튼
+$(".page-link").on('click',function (){
+    let page = $(this).attr('name')
+    window.location.href='http://localhost:3000/bulletin?id='+category+"&page="+page;
 })
 

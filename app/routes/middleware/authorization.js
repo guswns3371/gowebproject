@@ -12,7 +12,12 @@ const verifyToken = async (req, res, next) => {
             res.locals.userName = user.name;
             res.locals.email = user.email;
             res.locals.userIndex = user.id;
-            res.locals.profile_image = user.profile_image;
+            if (user.profile_image !== null){
+                res.locals.profile_image = user.profile_image;
+            }else {
+                res.locals.profile_image = "/images/account_default.jpg"
+            }
+
 
             console.log('[토큰 인증 성공]')
             next();

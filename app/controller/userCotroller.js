@@ -44,30 +44,51 @@ exports.checkLogin = function (req,res) {
     console.log("query",req.query);
     console.log("body",req.body);
     const loginInfo = new User(req.body);
-    UserModel.checkLogin(loginInfo,function (err,content) {
-        if (err)
-            res.json(err);
-        console.log('checkLogin content',content);
+    let UserData,id,token;
+    let isCorrect = false;
+    let isConfirmed = false;
 
-        if (content.isCorrect && content.isConfirmed){
-            let expiresIn = '1h';
+    db.UserInfo.findOne({where : {email : loginInfo.email}})
+        .then(user =>{
+            if (user === null) // 존재하지 않는 email
+                isCorrect = false;
+            else // 존재하는 email
+            {
+                console.log("checkLogin ",user.dataValues);
+                UserData = user.dataValues;
+                isCorrect = UserData.password
+                    === auth.getHashPassword(loginInfo.password,UserData.salt);
+                isConfirmed = UserData.confirmed;
+                id = UserData.id;
+            }
 
-            if(req.body.autoLoginCheck)
-                expiresIn = '5h';
-            console.log("req.body.autoLoginCheck",req.body.autoLoginCheck)
-            console.log("expiresIn",expiresIn)
-            let token = jwt.sign({
-                    userIndex : content.id
-                },
-                secretObj.secret ,    // 비밀 키
-                {
-                    expiresIn: expiresIn  // 유효 시간은 5분
-                });
-            res.cookie("user_cookie",token);
-            content.token = token;
-        }
-        res.json(content); //jsonp 사용 했으면 json 사용 하지 말거라 : ERR_HTTP_HEADERS_SENT
-    })
+
+            if (isCorrect && isConfirmed){
+                let expiresIn = '1h';
+
+                if(req.body.autoLoginCheck)
+                    expiresIn = '5h';
+                console.log("req.body.autoLoginCheck",req.body.autoLoginCheck)
+                console.log("expiresIn",expiresIn)
+                token = jwt.sign({
+                        userIndex : id
+                    },
+                    secretObj.secret ,    // 비밀 키
+                    {
+                        expiresIn: expiresIn  // 유효 시간은 5분
+                    });
+                res.cookie("user_cookie",token);
+            }
+            res.json({
+                isCorrect : isCorrect,
+                isConfirmed : isConfirmed === true,
+                id : id,
+                token : token
+            }); //jsonp 사용 했으면 json 사용 하지 말거라 : ERR_HTTP_HEADERS_SENT
+        })
+        .catch(err =>{
+            console.log("checkLogin err ",err);
+        })
 };
 
 exports.verifyEmail = function (req,res) {
@@ -122,7 +143,7 @@ exports.editUserData = function (req,res) {
     UserModel.editUserData(req, res,function (err, content) {
         if (err)
             res.json(err);
-        res.render('index', {session: res.locals, title : "BlahBlah"})
+        res.redirect('/')
     }).then(r  => {
         console.log("editUserData then : ",r)
     })

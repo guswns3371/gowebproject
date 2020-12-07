@@ -228,137 +228,137 @@ Chat.makeChatRoom = async function(chatRoom,result){
     result(null,send);
 };
 
-Chat.getChatHistory = async function(chatRoodId,result){
-    let res = [];
-    let historyData;
-    const history = await db.ChatHistory.findAll({
-        attributes : ["id","chat_room_id","chat_user_id","content","read_people","time"],
-        where : {chat_room_id : chatRoodId}
-    });
-    //console.log({history});
+// Chat.getChatHistory = async function(chatRoodId,result){
+//     let res = [];
+//     let historyData;
+//     const history = await db.ChatHistory.findAll({
+//         attributes : ["id","chat_room_id","chat_user_id","content","read_people","time"],
+//         where : {chat_room_id : chatRoodId}
+//     });
+//     //console.log({history});
+//
+//     if (history){
+//
+//         /** forEach는 await 함수를 사용 못하는데
+//          * for .. of 는 사용가능하다~~~~!!!!!!
+//          */
+//         for (const his of history) {
+//             historyData = his.dataValues;
+//             let time = historyData.time;
+//            // historyData.read_people = `${historyData.read_people}`;
+//             historyData.time = time.format("a/p hh:mm");
+//             const user = await db.UserInfo.findByPk(historyData.chat_user_id);
+//
+//             if (user === undefined){
+//                 historyData["user_info"] = {
+//                     id :  null,
+//                     user_id :  null,
+//                     email : null,
+//                     name :  "알수없음",
+//                     message :  null,
+//                     profile_image :  null,
+//                     back_image :  null
+//                 };
+//             }else {
+//                 historyData["user_info"] = {
+//                     id :  user.id,
+//                     user_id :  user.user_id,
+//                     email :  user.email,
+//                     name :  user.name,
+//                     message :  user.message,
+//                     profile_image :  user.profile_image,
+//                     back_image :  user.back_image
+//                 };
+//             }
+//
+//
+//             //console.log(historyData);
+//             res.push(historyData);
+//         }
+//     }else {
+//
+//     }
+//     //console.log("getChatHistory res",res);
+//
+//     result(null,res);
+// };
 
-    if (history){
-
-        /** forEach는 await 함수를 사용 못하는데
-         * for .. of 는 사용가능하다~~~~!!!!!!
-         */
-        for (const his of history) {
-            historyData = his.dataValues;
-            let time = historyData.time;
-           // historyData.read_people = `${historyData.read_people}`;
-            historyData.time = time.format("a/p hh:mm");
-            const user = await db.UserInfo.findByPk(historyData.chat_user_id);
-
-            if (user === undefined){
-                historyData["user_info"] = {
-                    id :  null,
-                    user_id :  null,
-                    email : null,
-                    name :  "알수없음",
-                    message :  null,
-                    profile_image :  null,
-                    back_image :  null
-                };
-            }else {
-                historyData["user_info"] = {
-                    id :  user.id,
-                    user_id :  user.user_id,
-                    email :  user.email,
-                    name :  user.name,
-                    message :  user.message,
-                    profile_image :  user.profile_image,
-                    back_image :  user.back_image
-                };
-            }
-
-
-            //console.log(historyData);
-            res.push(historyData);
-        }
-    }else {
-
-    }
-    //console.log("getChatHistory res",res);
-
-    result(null,res);
-};
-
-Chat.getChatRoomList = async function(userId,result){
-    let room_info_list = [];
-    let res = [];
-    let array = [];
-    let user;
-    let room_infos;
-    let roomInfoData;
-
-
-    // 유저가 들어간 채팅방 id 정보들
-    const chatRoomList = await db.UserChatRoom.findAll({
-        attributes : ["chat_room_id","unread_num","room_name"],
-        where : {user_id : userId}
-    });
-
-    for(const chatRoom of chatRoomList){
-        room_info_list.push(chatRoom.dataValues);
-    }
-
-
-    // 유저가 들어간 채팅방의 모든 정보들
-    for (const room of room_info_list){
-        room_infos = await db.ChatRoom.findByPk(room.chat_room_id);
-
-        if (room_infos !== null){
-            if (room_infos.dataValues.last_time !== null){
-                roomInfoData = room_infos.dataValues;
-                let time = roomInfoData.last_time;
-                roomInfoData.real_time = time;
-                roomInfoData.last_time = time.format("a/p hh:mm");
-                room["chat_room_info"] = roomInfoData;
-                room["user_info"] = [];
-
-                // 단순 문자열"1,48" =>  1,48 ==> ["1","48"] 로 만드는 과정
-                console.log(roomInfoData.people);
-
-
-                array = (roomInfoData.people).split(",");
-                console.log({array});
-               // return ;
-                for (const id of array){
-
-                    // 자신의 정보는 뺀다다
-                   if (id !== userId || array.length === 1 ){
-                        const userInfo = await db.UserInfo.findByPk(id);
-                        user = userInfo.dataValues;
-
-                        // 이과정을 해줘야 패스워드 가 나타나지 않는다다
-                        room["user_info"].push( {
-                            id :  user.id,
-                            user_id :  user.user_id,
-                            email :  user.email,
-                            name :  user.name,
-                            message :  user.message,
-                            profile_image :  user.profile_image,
-                            back_image :  user.back_image
-                        });
-                    }
-                }
-
-                res.push(room);
-            }
-        }
-
-    }
-
-    // 가장 최근에 갱신된 순서로 sorting 한다다
-   res.sort(function (a,b) {
-        return a.chat_room_info.real_time > b.chat_room_info.real_time
-            ? -1 : a.chat_room_info.real_time < b.chat_room_info.real_time ? 1 : 0;
-    });
-
-    // console.log({res});
-
-    result(null,res);
-};
+// Chat.getChatRoomList = async function(userId,result){
+//     let room_info_list = [];
+//     let res = [];
+//     let array = [];
+//     let user;
+//     let room_infos;
+//     let roomInfoData;
+//
+//
+//     // 유저가 들어간 채팅방 id 정보들
+//     const chatRoomList = await db.UserChatRoom.findAll({
+//         attributes : ["chat_room_id","unread_num","room_name"],
+//         where : {user_id : userId}
+//     });
+//
+//     for(const chatRoom of chatRoomList){
+//         room_info_list.push(chatRoom.dataValues);
+//     }
+//
+//
+//     // 유저가 들어간 채팅방의 모든 정보들
+//     for (const room of room_info_list){
+//         room_infos = await db.ChatRoom.findByPk(room.chat_room_id);
+//
+//         if (room_infos !== null){
+//             if (room_infos.dataValues.last_time !== null){
+//                 roomInfoData = room_infos.dataValues;
+//                 let time = roomInfoData.last_time;
+//                 roomInfoData.real_time = time;
+//                 roomInfoData.last_time = time.format("a/p hh:mm");
+//                 room["chat_room_info"] = roomInfoData;
+//                 room["user_info"] = [];
+//
+//                 // 단순 문자열"1,48" =>  1,48 ==> ["1","48"] 로 만드는 과정
+//                 console.log(roomInfoData.people);
+//
+//
+//                 array = (roomInfoData.people).split(",");
+//                 console.log({array});
+//                // return ;
+//                 for (const id of array){
+//
+//                     // 자신의 정보는 뺀다다
+//                    if (id !== userId || array.length === 1 ){
+//                         const userInfo = await db.UserInfo.findByPk(id);
+//                         user = userInfo.dataValues;
+//
+//                         // 이과정을 해줘야 패스워드 가 나타나지 않는다다
+//                         room["user_info"].push( {
+//                             id :  user.id,
+//                             user_id :  user.user_id,
+//                             email :  user.email,
+//                             name :  user.name,
+//                             message :  user.message,
+//                             profile_image :  user.profile_image,
+//                             back_image :  user.back_image
+//                         });
+//                     }
+//                 }
+//
+//                 res.push(room);
+//             }
+//         }
+//
+//     }
+//
+//     // 가장 최근에 갱신된 순서로 sorting 한다다
+//    res.sort(function (a,b) {
+//         return a.chat_room_info.real_time > b.chat_room_info.real_time
+//             ? -1 : a.chat_room_info.real_time < b.chat_room_info.real_time ? 1 : 0;
+//     });
+//
+//     // console.log({res});
+//
+//     result(null,res);
+// };
 
 Chat.makeHistory = async function(req,result){
     let send = {};

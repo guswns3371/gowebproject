@@ -8,6 +8,7 @@ const fs = require('fs');
 const db = require('../../models');
 
 const User = function (infos) {
+    this.id = infos.id;
     this.user_id = infos.user_id;
     this.password = infos.password;
     this.email = infos.email;
@@ -93,38 +94,6 @@ User.checkIdValidation = function (id, result) {
             console.log("err checkIdValidation err : ",err);
             result(err,null);
         });
-};
-
-User.checkLogin = function(loginInfo,result){
-    let UserData;
-    let isCorrect = false;
-    let isConfirmed = false;
-    let id;
-
-    db.UserInfo.findOne({where : {email : loginInfo.email}})
-        .then(user =>{
-            if (user === null) // 존재하지 않는 email
-                isCorrect = false;
-            else // 존재하는 email
-            {
-                console.log("checkLogin ",user.dataValues);
-                UserData = user.dataValues;
-                isCorrect = UserData.password
-                    === auth.getHashPassword(loginInfo.password,UserData.salt);
-                isConfirmed = UserData.confirmed;
-                id = UserData.id;
-            }
-
-            result(null,{
-                isCorrect : isCorrect,
-                isConfirmed : isConfirmed === true,
-                id : id
-            });
-        })
-        .catch(err =>{
-            console.log("checkLogin err ",err);
-            result(err,null);
-        })
 };
 
 User.verifyEmail = function(body,result){

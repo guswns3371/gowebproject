@@ -23,6 +23,15 @@ module.exports = (sequelize, DataTypes) => {
       UserInfo.hasMany(models.Reply,{
         onDelete: 'cascade'
       });
+      UserInfo.hasMany(models.ChatHistory,{
+        onDelete: 'cascade'
+      });
+
+      UserInfo.belongsToMany(models.ChatRoom,{
+        through : 'UserChatRoom',
+        foreignKey : "user_id",
+        onDelete: 'cascade'
+      });
     }
   }
 

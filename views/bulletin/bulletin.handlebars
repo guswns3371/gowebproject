@@ -10,7 +10,7 @@
                 <div class="col-xl-3 col-md-6 mb-4" >
                     <div class="card border-left-primary shadow h-100 py-2">
                         <div class="card-body" id="bulletinList">
-                                <h6 class="m-0 font-weight-bold text-primary" id="bulletin"><a href="/bulletin/{{this.id}}">{{this.name}}</a></h6>
+                                <h6 class="m-0 font-weight-bold text-primary" id="bulletin"><a href="/bulletin?id={{this.id}}">{{this.name}}</a></h6>
                         </div>
                     </div>
                 </div>
@@ -68,15 +68,15 @@
                     <div class="col-sm-12 col-md-12">
                         <ul class="pagination">
                             <li id="dataTable_previous" class="paginate_button page-item previous">
-                                <a class="page-link" href="/post?page=1" aria-controls="dataTable" tabindex="0" >처음</a>
+                                <button class="page-link" type="button" name="1" aria-controls="dataTable" tabindex="0" >처음</button>
                             </li>
                             {{#each tabList}}
                                 <li class="paginate_button page-item " id="pages">
-                                    <a class="page-link" href="/post?page={{this}}" id="page{{this}}" aria-controls="dataTable" tabindex="0">{{this}}</a>
+                                    <button class="page-link" type="button" name="{{this}}" id="page{{this}}" aria-controls="dataTable" tabindex="0">{{this}}</button>
                                 </li>
                             {{/each}}
                             <li id="dataTable_next" class="paginate_button page-item next">
-                                <a class="page-link" href="/post?page={{tabList.length}}" aria-controls="dataTable" tabindex="0">마지막</a>
+                                <button class="page-link" type="button" name="{{tabList.length}}" aria-controls="dataTable" tabindex="0">마지막</button>
                             </li>
                         </ul>
                     </div>
