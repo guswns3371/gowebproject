@@ -8,6 +8,7 @@ const logger = require('morgan');
 const models = require('./models/index');
 const exphbs  = require('express-handlebars');
 const appRouter = require('./app/routes/appRoutes');
+const appSocket = require('./app/socket/appSocket');
 
 const db = require('./models');
 global.db = db;

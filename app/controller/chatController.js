@@ -55,12 +55,12 @@ exports.getChatRoomList = async function (req, res) {
 
         for (const room of roomData) {
             let people = room.ChatRoom.people
-            let user = await db.UserInfo.findByPk(people)
+            let bulletin = await db.Bulletin.findByPk(people)
             response.push({
-                user_id: user.id,
+                user_id: bulletin.id,
                 chat_room_id: room.chat_room_id,
-                user_image: user.profile_image,
-                room_name : user.name,
+                user_image: bulletin.profile_image,
+                room_name : bulletin.name,
                 last_content : room.last_content,
                 last_time : room.createdAt.format("hh:mm")
             })
@@ -94,14 +94,16 @@ exports.makeHistory = async function (req,res) {
 
 exports.getChatHome = async function (req, res) {
     try {
-        let chatRoomList = []
-        let users = await db.UserInfo.findAll()
+        let chatRoomList
+        let bulletin = await db.Bulletin.findAll()
 
         // 모든 유저들과의 1대1 방 추가
-        for (const user of users) {
+        for (const bulletinElement of bulletin) {
+            chatRoomList = []
+            chatRoomList.push(bulletinElement.id)
             let chatRoomOneToOne = await db.ChatRoom.findOrCreate({
-                where : {people : `${[user.id]}`.trim()},
-                defaults : {people : `${[user.id]}`.trim()}
+                where : {people : `${chatRoomList}`.trim()},
+                defaults : {people : `${chatRoomList}`.trim()}
             })
             let chatRoomData = chatRoomOneToOne[0]
 

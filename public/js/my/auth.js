@@ -27,6 +27,8 @@ $('#loginBtn').on('click',function (e) {
             if (value.isCorrect === true){
                 $('#loginErr').text("")
                 if (value.isConfirmed === true){
+                    localStorage.userIndex = value.id
+                    //localStorage.getItem('userIndex')로 가져온다
                     window.location.href = "/"
                 }else {
                     window.location.href = `/verify?email=${email}`
