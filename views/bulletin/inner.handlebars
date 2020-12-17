@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-sm-1"><i class="fas fa-eye" style="color : #2e59d9"> {{inner.views}}</i> </div>
             <div class="col-sm-1"><i class="fas fa-heart" id="likeBtn" style="color: #ca2819"> {{inner.likes}}</i> </div>
-            <div class="col-sm-6"><i class="fas fa-reply-all" style="color: #b1a500"> {{inner.replies}}</i> </div>
+            <div class="col-sm-6"> </div>
             <div class="col-sm-2">{{inner.message.UserInfo.user_id}}</div>
             <div class="col-sm-2">{{inner.message.createdAt}}</div>
         </div>
@@ -79,14 +79,6 @@
                         {{this.content}}
                         <br/>
                         <br/>
-
-<!--                        <button class="btn btn-primary btn-icon-split btn-sm re-reply" name="{{this.id}}">-->
-<!--                            <span class="icon text-white-50">-->
-<!--                              <i class="fas fa-flag"></i>-->
-<!--                            </span>-->
-<!--                            <span class="text">댓글</span>-->
-<!--                        </button>-->
-
                     </div>
                 </div>
                 <div class="card mb-4 re-reply-card" id="re-reply-card-{{this.id}}" name="{{this.id}}" style="display: none !important;">

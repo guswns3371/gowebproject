@@ -1,5 +1,3 @@
-const sql = require('../../dbConnection');
-const crypto = require('crypto');
 const mailer = require('../util/mailer');
 const auth = require('../util/authentication');
 const randomString = require('randomstring');
@@ -17,12 +15,6 @@ const User = function (infos) {
 };
 
 
-// const getHashPassword = (inputPassword,salt)=>{
-//     return  crypto.createHash("sha512").update(inputPassword+salt).digest("hex");
-// };
-// const getSalt = () =>{
-//     return Math.round((new Date().valueOf()*Math.random())) + "";
-// };
 
 const sendSecretToken = (secretToken,email) =>{
     // email에 담길 내용
@@ -105,7 +97,7 @@ User.verifyEmail = function(body,result){
         where : {
             email : body.email,
             secretToken : body.secretToken
-    }})
+        }})
         .then(user =>{
             if (user !== null)
             {
@@ -117,7 +109,7 @@ User.verifyEmail = function(body,result){
                 db.UserInfo.update(
                     {confirmed: true},
                     {where : {email : body.email}}
-                    )
+                )
                     .then(()=>{
                         console.log("verifyEmail confirmed = true")})
                     .catch(err =>{

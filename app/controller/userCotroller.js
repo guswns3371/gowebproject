@@ -44,7 +44,7 @@ exports.checkLogin = function (req,res) {
     console.log("query",req.query);
     console.log("body",req.body);
     const loginInfo = new User(req.body);
-    let UserData,id,token;
+    let UserData,id,token,name;
     let isCorrect = false;
     let isConfirmed = false;
 
@@ -60,8 +60,8 @@ exports.checkLogin = function (req,res) {
                     === auth.getHashPassword(loginInfo.password,UserData.salt);
                 isConfirmed = UserData.confirmed;
                 id = UserData.id;
+                name = UserData.name;
             }
-
 
             if (isCorrect && isConfirmed){
                 let expiresIn = '1h';
@@ -83,6 +83,7 @@ exports.checkLogin = function (req,res) {
                 isCorrect : isCorrect,
                 isConfirmed : isConfirmed === true,
                 id : id,
+                name : name,
                 token : token
             }); //jsonp 사용 했으면 json 사용 하지 말거라 : ERR_HTTP_HEADERS_SENT
         })
@@ -146,25 +147,5 @@ exports.editUserData = function (req,res) {
         res.redirect('/')
     }).then(r  => {
         console.log("editUserData then : ",r)
-    })
-};
-
-exports.updateFCMToken = function (req,res) {
-    UserModel.updateFCMToken(req.body,function (err, content) {
-        if (err)
-            res.json(err);
-        res.json(content);
-    }).then(r  => {
-        console.log("updateFCMToken then : ",r)
-    })
-};
-
-exports.deleteFCMToken = function (req,res) {
-    UserModel.deleteFCMToken(req.params.id,function (err, content) {
-        if (err)
-            res.json(err);
-        res.json(content);
-    }).then(r  => {
-        console.log("deleteFCMToken then : ",r)
     })
 };

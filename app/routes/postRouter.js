@@ -1,5 +1,4 @@
 module.exports = function(app) {
-    const upload = require("../util/uploadUtils");
     const post = require('../controller/postController');
     const {verifyToken} = require('./middleware/authorization');
 

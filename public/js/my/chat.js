@@ -1,5 +1,6 @@
 let roomId;
 let userIndex = localStorage.getItem('userIndex')
+let userName = localStorage.getItem('userName')
 
 function refreshChatRoomList() {
     $.ajax({
@@ -12,7 +13,9 @@ function refreshChatRoomList() {
             const value = JSON.parse(jqXHR)
 
             roomId = value[0].chat_room_id
+            let roomName = value[0].room_name
             getChatHistory(roomId)
+            $("#chat-title").empty().html('채팅 ['+roomName+"]")
 
             let html = ""
             value.forEach(data=>{
@@ -73,7 +76,7 @@ function getChatHistory(roomId) {
 
                 if (mine)
                     val = `
-                    <div class="col-xl-7 col-lg-0"></div>
+                    <div class="col-xl-7 col-lg-0" id="${user_id}"></div>
                     `
                 else
                     val=`
@@ -105,11 +108,28 @@ function getChatHistory(roomId) {
 
 function sendMessage(message) {
     $('#chatSendInput').val('')
+    let today = new Date()
+    let now = (today.getHours()-12) +":"+today.getMinutes()
+    let html = `
+                <div class="chat-history ">
+                    <div class="row" >
+                         <div class="col-xl-7 col-lg-0" id="${userIndex}"></div>
+                        <div class="col-xl-5 col-lg-7">
+                            <h4 class="small font-weight-bold text-gray-900">${userName} <span class="float-right">${now}</span></h4>
+                            ${message}
+                        </div>
+                    </div>
+                </div>
+
+                `
+    $('#chatHistoryBox').append(html)
+
     socket.emit('send',{
         userIndex : userIndex,
         roomId : roomId,
         message : message
     });
+
 }
 // 채팅방 리스트 새로고침
 $("#refreshChatList").on('click', function () {
@@ -160,7 +180,7 @@ $(document).ready(function () {
                 return
             if (user_index === parseInt(userIndex))
                 val = `
-                    <div class="col-xl-7 col-lg-0"></div>
+                    <div class="col-xl-7 col-lg-0" id="${user_id}"></div>
                     `
             else
                 val=`

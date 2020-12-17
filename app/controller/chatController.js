@@ -1,18 +1,3 @@
-const ChatModel = require('../model/chatModel');
-const UserModel = require('../model/userModel');
-
-// exports.makeChatRoom = function (req,res) {
-//     const chatRoom = new ChatModel(req.body);
-//     console.log(chatRoom);
-//
-//     ChatModel.makeChatRoom(chatRoom, function (err, content) {
-//         if (err)
-//             res.json(err);
-//         res.json(content);
-//     }).then(r  => {
-//         console.log("makeChatRoom then :",r)
-//     });
-// };
 
 exports.getChatHistory = async function (req,res) {
     try {

@@ -1,3 +1,4 @@
+require('../util/timeFormatUitls')
 const Bulletin = function (infos) {
     this.id = infos.id;
     this.name = infos.name;
@@ -41,23 +42,7 @@ const Reply = function (infos) {
     if (infos.SubReply !== undefined){
         this.SubReply = []
         infos.SubReply.forEach(reply=>{
-            // console.log('reply ',JSON.parse(JSON.stringify(reply)))
             this.SubReply.push(new Reply(reply))
-            // this.SubReply.push({
-            //     id : reply.id,
-            //     content : reply.content,
-            //     createdAt : reply.createdAt.format("yy-MM-dd hh:mm"),
-            //     updatedAt : reply.updatedAt,
-            //     UserInfoId : reply.UserInfoId,
-            //     PostItemId : reply.PostItemId,
-            //     ReplyId : reply.ReplyId,
-            //     UserInfo : {
-            //         id : reply.UserInfo.id,
-            //         user_id : reply.UserInfo.user_id,
-            //         email : reply.UserInfo.email,
-            //         name : reply.UserInfo.name
-            //     }
-            // })
         })
     }
 }
@@ -110,7 +95,6 @@ exports.getBoardAndPosts = async function (req, res, next) {
                         PostItemId: result.id
                     }
                 }).then(result1=>{
-                    console.log('fuck')
                     result.view_cnt = result1.count
                 })
 
@@ -190,8 +174,7 @@ exports.getPost = async function (req, res, next) {
         })
         await db.ViewPostItem.findAndCountAll({
             where : {
-                PostItemId : postItemId,
-                UserInfoId : userId
+                PostItemId : postItemId
             }
         }).then(result=>{
             response.views =  result.count
@@ -200,8 +183,7 @@ exports.getPost = async function (req, res, next) {
         // 좋아요수
         await db.LikePostItem.findAndCountAll({
             where : {
-                PostItemId : postItemId,
-                UserInfoId : userId
+                PostItemId : postItemId
             }
         }).then(result=>{
             response.likes =  result.count
@@ -209,7 +191,7 @@ exports.getPost = async function (req, res, next) {
         console.log('response',JSON.parse(JSON.stringify(response)))
 
         // 댓글
-        await db.Reply.findAll({
+        await db.Reply.findAndCountAll({
             where:{
                 PostItemId : postItemId,
                 ReplyId : null
@@ -223,31 +205,12 @@ exports.getPost = async function (req, res, next) {
                     model : db.UserInfo,
                     as : 'UserInfo'
                 }]
-
-                // include:[{
-                //     all : true,
-                //     nested : true
-                // }]
-
             }]
         }).then(result=>{
-            // console.log('result ',JSON.parse(JSON.stringify(result)))
-            result.forEach(row=>{
+            result.rows.forEach(row=>{
 
                 replyList.push(new Reply(row))
             })
-
-            // 대댓글이 중복으로 나타나는 부분 해결
-            // replyList.forEach(row=>{
-            //     if (row.SubReply) {
-            //         row.SubReply.forEach(inner=>{
-            //             replyList = replyList.filter(function (obj){
-            //                 return obj.id !== inner.id;
-            //             })
-            //         })
-            //     }
-            // })
-
             response.replyList = replyList
             console.log('replyList result',JSON.parse(JSON.stringify(replyList)))
         })

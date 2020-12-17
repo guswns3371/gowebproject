@@ -12,10 +12,6 @@ exports.messageReceived = async function (io, data, sockets) {
         chat_room_id: data.roomId,
         chat_user_id: data.userIndex,
         content: data.message
-    }).then(result => {
-        console.log(result)
-    }).catch(err => {
-        console.log(err)
     })
 
     let response
@@ -40,6 +36,5 @@ exports.messageReceived = async function (io, data, sockets) {
             time : history.createdAt.format("hh:mm")
         }
     }
-    sockets.emit('sendToEvery',response)
     sockets.broadcast.emit('sendToEvery',response)
 }

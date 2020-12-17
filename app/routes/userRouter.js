@@ -37,11 +37,6 @@ module.exports = function(app) {
     app.route('/verify/resend')
         .post(user.resendSecretToken);
 
-    app.route('/user/fcm')
-        .post(user.updateFCMToken);
-
-    app.route('/user/fcm/:id')
-        .delete(user.deleteFCMToken);
 
     app.route('/logout')
         .get(function (req, res) {

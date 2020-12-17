@@ -28,6 +28,7 @@ $('#loginBtn').on('click',function (e) {
                 $('#loginErr').text("")
                 if (value.isConfirmed === true){
                     localStorage.userIndex = value.id
+                    localStorage.userName = value.name
                     //localStorage.getItem('userIndex')로 가져온다
                     window.location.href = "/"
                 }else {

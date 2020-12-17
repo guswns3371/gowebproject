@@ -39,7 +39,7 @@ $('#writeBtn').on('click',function (e) {
         success:function(jqXHR) {
             const value = JSON.parse(jqXHR)
             if (value.success === true) {
-                window.location.href="/bulletin/"+menuId
+                window.location.href="/bulletin?id="+menuId
             }else {
                 alert("게시물을 작성하지 못했습니다. 관리자에게 문의하세요 "+value.message);
             }
